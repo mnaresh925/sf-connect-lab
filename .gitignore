@@ -1,1 +1,6 @@
+#Self Signed Certs
+*.crt
+*.key
+*.key.b64
+# Node Modules
 node_modules 
