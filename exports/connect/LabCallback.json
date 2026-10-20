@@ -1,0 +1,133 @@
+{
+  "Version": "2019-10-30",
+  "StartAction": "fbbe8a3a-298d-480c-a0cb-21ce687f291d",
+  "Metadata": {
+    "entryPointPosition": {
+      "x": 40,
+      "y": 40
+    },
+    "ActionMetadata": {
+      "fbbe8a3a-298d-480c-a0cb-21ce687f291d": {
+        "position": {
+          "x": 169.6,
+          "y": 47.2
+        }
+      },
+      "3ecc0345-f8e4-400b-ab1f-4de5f78e1bf8": {
+        "position": {
+          "x": 423.2,
+          "y": 48.8
+        },
+        "parameters": {
+          "QueueId": {
+            "displayName": "SalesforceLabQueue"
+          }
+        },
+        "queue": {
+          "text": "SalesforceLabQueue"
+        }
+      },
+      "16beb6d7-c2a2-4843-bc3c-8e605e606c07": {
+        "position": {
+          "x": 654.4,
+          "y": 345.6
+        }
+      },
+      "662002fd-d1c4-4027-9206-25667482457f": {
+        "position": {
+          "x": 659.2,
+          "y": 44.8
+        }
+      },
+      "c301cfe7-8703-4829-9cca-75234bf15523": {
+        "position": {
+          "x": 902.4,
+          "y": 60.8
+        }
+      }
+    },
+    "Annotations": [],
+    "name": "LabCallback",
+    "description": "",
+    "type": "contactFlow",
+    "status": "PUBLISHED",
+    "hash": {}
+  },
+  "Actions": [
+    {
+      "Parameters": {
+        "SkipWhenDTMFBufferEnabled": "false",
+        "Text": "This is a call from the lab. Please hold for an agent."
+      },
+      "Identifier": "fbbe8a3a-298d-480c-a0cb-21ce687f291d",
+      "Type": "MessageParticipant",
+      "Transitions": {
+        "NextAction": "3ecc0345-f8e4-400b-ab1f-4de5f78e1bf8",
+        "Errors": [
+          {
+            "NextAction": "16beb6d7-c2a2-4843-bc3c-8e605e606c07",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {
+        "QueueId": "arn:aws:connect:ap-southeast-2:885571815657:instance/59b8c363-b1fb-452a-be2a-0418035f9ecb/queue/82de2883-043d-4f61-abf6-491f0cc948fb"
+      },
+      "Identifier": "3ecc0345-f8e4-400b-ab1f-4de5f78e1bf8",
+      "Type": "UpdateContactTargetQueue",
+      "Transitions": {
+        "NextAction": "662002fd-d1c4-4027-9206-25667482457f",
+        "Errors": [
+          {
+            "NextAction": "16beb6d7-c2a2-4843-bc3c-8e605e606c07",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {},
+      "Identifier": "16beb6d7-c2a2-4843-bc3c-8e605e606c07",
+      "Type": "DisconnectParticipant",
+      "Transitions": {}
+    },
+    {
+      "Parameters": {
+        "RetryDelaySeconds": "600",
+        "InitialCallDelaySeconds": "99",
+        "MaximumConnectionAttempts": "1",
+        "CallbackMode": "AgentFirst"
+      },
+      "Identifier": "662002fd-d1c4-4027-9206-25667482457f",
+      "Type": "CreateCallbackContact",
+      "Transitions": {
+        "NextAction": "16beb6d7-c2a2-4843-bc3c-8e605e606c07",
+        "Errors": [
+          {
+            "NextAction": "c301cfe7-8703-4829-9cca-75234bf15523",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {
+        "SkipWhenDTMFBufferEnabled": "false",
+        "Text": "We are experiencing technical difficulties, please call back later"
+      },
+      "Identifier": "c301cfe7-8703-4829-9cca-75234bf15523",
+      "Type": "MessageParticipant",
+      "Transitions": {
+        "NextAction": "16beb6d7-c2a2-4843-bc3c-8e605e606c07",
+        "Errors": [
+          {
+            "NextAction": "16beb6d7-c2a2-4843-bc3c-8e605e606c07",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    }
+  ]
+}

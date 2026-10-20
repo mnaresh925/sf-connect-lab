@@ -92,7 +92,7 @@ base64 -w0 server.key > server.key.b64
 3. Configure OAuth settings:
    - Check **Enable OAuth Settings**.
    - **Callback URL**: `https://localhost/callback` *(required by UI, unused by JWT)*.
-   - Check **Use digital signatures** and upload `server.crt`.
+   - Check **Enable JWT Bearer Flow** and upload `server.crt`.
    - **Selected OAuth Scopes**:
      - `Manage user data via APIs (api)`
      - `Perform requests at any time (refresh_token, offline_access)`
@@ -182,6 +182,25 @@ node --input-type=module -e "import('./index.mjs').then(m => m.handler({ Details
    - **Routing Profile**: Create `LabAgents` (associate with `SalesforceLabQueue`, Voice and Chat channels enabled).
    - **User**: Create agent user `lab.agent` assigned to `LabAgents` profile.
 
+### Step 2.2 a: Deploy Customer Lookup Lambda
+1. AWS Lambda > Create function > Author from scratch. 
+   - Function Name: `sfCustomerLookup`
+   - Runtime: `Node.js 22.x` (or latest supported LTS)
+   - Architecture: `x86_64` or `arm64`
+   - Memory: `256 MB`
+   - Timeout: `8 seconds`
+2. Paste the code from `lambda/sfCustomerLookup/index.mjs` into the inline editor.
+3. In the **Configuration** tab > **Environment variables**, add:
+   - `SF_CLIENT_ID`: Paste your Salesforce Connected App Consumer Key.
+   - `SF_USERNAME`: Enter the Salesforce integration user's email.
+   - `SF_LOGIN_URL`: `https://login.salesforce.com`.
+   - `SF_PRIVATE_KEY_B64`: Paste the base64 content of your `server.key.b64` file.
+4. Increase the function **Timeout** to **10 seconds** (default 3 seconds is often too short for Salesforce API calls).
+5. Click **Deploy**.
+6. Test in AWS Console: Click the **Test** tab, create a test event with the JSON payload from `lambda/sfCustomerLookup/test_event.json`, and click **Invoke**. Verify the output shows `{ found: 'true', ... }`.
+7. Open Monitor > View CloudWatch logs and note where errors appear. You will need it when something breaks.
+
+
 ### Step 2.3: Contact Flows Setup
 1. Navigate to **Routing > Flows**.
 2. Import contact flows from `exports/connect/` (if flow designer supports import):
@@ -202,26 +221,7 @@ node --input-type=module -e "import('./index.mjs').then(m => m.handler({ Details
    - `https://<github-username>.github.io`
    - `https://<your-my-domain>.develop.my.salesforce.com` *(required if CCP panel stays blank)*
 
-### Step 2.5: Deploy Customer Lookup Lambda
-1. Open **AWS Lambda** console and create a new function:
-   - **Function Name**: `sfCustomerLookup`
-   - **Runtime**: `Node.js 22.x` (or latest supported LTS)
-   - **Architecture**: `x86_64` or `arm64`
-   - **Memory**: `256 MB`
-   - **Timeout**: `8 seconds`
-2. Paste the source code from `lambda/sfCustomerLookup/index.mjs`.
-3. Configure **Configuration > Environment variables**:
-   - `SF_LOGIN_URL`: `https://login.salesforce.com`
-   - `SF_CLIENT_ID`: `<Consumer Key from Connected App>`
-   - `SF_USERNAME`: `<Salesforce Integration Username>`
-   - `SF_PRIVATE_KEY_B64`: `<Contents of server.key.b64>`
-4. Deploy the function.
-5. **Grant Connect Access**:
-   - Return to the Amazon Connect Console > your instance > **Contact flows > AWS Lambda**.
-   - Select `sfCustomerLookup` and click **Add Lambda Function**.
-6. Run a test event in the Lambda console using the payload tested in Step 1.6 to verify execution.
-
-### Step 2.6: Configure GitHub Pages CCP Softphone
+### Step 2.5: Configure GitHub Pages CCP Softphone
 1. In your local repository, edit `docs/config.js`:
    ```javascript
    const CCP_URL = "https://<your-instance-alias>.my.connect.aws/ccp-v2/";
@@ -229,7 +229,7 @@ node --input-type=module -e "import('./index.mjs').then(m => m.handler({ Details
    ```
 2. Commit and push changes to `main`. Wait for GitHub Pages deployment to complete.
 
-### Step 2.7: End-to-End Verification
+### Step 2.6: End-to-End Verification
 
 #### A. Inbound / Chat Verification
 1. Log in to Salesforce Service Console and ensure the Open CTI softphone utility item is visible and authenticated.
@@ -237,6 +237,11 @@ node --input-type=module -e "import('./index.mjs').then(m => m.handler({ Details
    - Select flow: `LabChatLookup`.
    - Add customer attribute:
      - Key: `customerNumber`, Value: `1001` (or Key: `sfContactId`, Value: `003...`).
+     ```json
+     {
+        "customerNumber": "1001"
+     }
+     ```
    - Click **Apply** and initiate chat.
 3. **Verify**:
    - Contact record `Test Caller` screen-pops in Salesforce.
@@ -246,11 +251,23 @@ node --input-type=module -e "import('./index.mjs').then(m => m.handler({ Details
 #### B. Outbound Voice Dialing *(Only if a phone number was claimed)*
 1. **AWS IAM User**:
    - Create IAM user `sf-connect-outbound` with programmatic access.
-   - Attach policy with permission: `connect:StartOutboundVoiceContact`.
+   - Attach an inline policy that allows only the one action. Replace the placeholders with your account ID and Connect instance ID (shown in the instance ARN). If the policy simulator accepts a narrower resource, narrow it.
+   ```json
+   {
+   "Version": "2012-10-17",
+   "Statement": [{
+     "Effect": "Allow",
+     "Action": "connect:StartOutboundVoiceContact",
+     "Resource": "arn:aws:connect:ap-southeast-2:<ACCOUNT_ID>:instance/<INSTANCE_ID>/*"
+   }]
+   }
+   ```
    - Save Access Key ID and Secret Access Key.
 2. **Salesforce External & Named Credentials**:
-   - **External Credential**: Update `AWS_Connect_Outbound` (Principal: `LabPrincipal`, AWS Region, Service: `connect`) with the IAM access keys.
-   - **Named Credential**: Confirm `Amazon_Connect_API` targets the correct region endpoint.
+   - Setup > Named Credentials > External Credentials > New. Label AWS Connect Outbound, name AWS_Connect_Outbound, protocol AWS Signature Version 4.
+   - On it, under Principals, add LabPrincipal with sequence 1 and enter the access key, secret, region ap-southeast-2 and service connect.
+   - Named Credentials tab > New. Label Amazon Connect API, name Amazon_Connect_API, URL https://connect.ap-southeast-2.amazonaws.com, external credential AWS_Connect_Outbound.
+   - Create a permission set Connect_Outbound. Under External Credential Principal Access enable AWS_Connect_Outbound - LabPrincipal, and under Apex Class Access add ConnectDialer and the metadata read access for Connect_Setting. Assign it to yourself. Without the principal access every callout fails, even though the credential exists.
 3. **Custom Metadata**:
    - Update `Connect_Setting.Default` with:
      - `Instance_Id__c`: Amazon Connect Instance ID

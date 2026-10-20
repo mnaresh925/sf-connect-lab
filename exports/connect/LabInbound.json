@@ -1,0 +1,126 @@
+{
+  "Version": "2019-10-30",
+  "StartAction": "9cb371b3-377c-45ab-a0ca-a0a0913aea31",
+  "Metadata": {
+    "entryPointPosition": {
+      "x": 40,
+      "y": 40
+    },
+    "ActionMetadata": {
+      "91bb6cd1-b0b9-4db2-ab42-4262dfd7932c": {
+        "position": {
+          "x": 873.6,
+          "y": 11.2
+        }
+      },
+      "9e060f10-e1f7-4a2d-92db-83cc6b9c5f2a": {
+        "position": {
+          "x": 496.8,
+          "y": 317.6
+        }
+      },
+      "68fa6c49-3a83-4f51-bcd0-4fbbc832aa34": {
+        "position": {
+          "x": 633.6,
+          "y": 76.8
+        },
+        "parameters": {
+          "QueueId": {
+            "displayName": "SalesforceLabQueue"
+          }
+        },
+        "queue": {
+          "text": "SalesforceLabQueue"
+        }
+      },
+      "9cb371b3-377c-45ab-a0ca-a0a0913aea31": {
+        "position": {
+          "x": 84,
+          "y": 160
+        }
+      },
+      "Welcome to the lab": {
+        "position": {
+          "x": 330.4,
+          "y": 60
+        },
+        "isFriendlyName": true
+      }
+    },
+    "Annotations": [],
+    "name": "LabInbound",
+    "description": "",
+    "type": "contactFlow",
+    "status": "PUBLISHED",
+    "hash": {}
+  },
+  "Actions": [
+    {
+      "Parameters": {},
+      "Identifier": "91bb6cd1-b0b9-4db2-ab42-4262dfd7932c",
+      "Type": "TransferContactToQueue",
+      "Transitions": {
+        "NextAction": "9e060f10-e1f7-4a2d-92db-83cc6b9c5f2a",
+        "Errors": [
+          {
+            "NextAction": "9e060f10-e1f7-4a2d-92db-83cc6b9c5f2a",
+            "ErrorType": "QueueAtCapacity"
+          },
+          {
+            "NextAction": "9e060f10-e1f7-4a2d-92db-83cc6b9c5f2a",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {},
+      "Identifier": "9e060f10-e1f7-4a2d-92db-83cc6b9c5f2a",
+      "Type": "DisconnectParticipant",
+      "Transitions": {}
+    },
+    {
+      "Parameters": {
+        "QueueId": "arn:aws:connect:ap-southeast-2:885571815657:instance/59b8c363-b1fb-452a-be2a-0418035f9ecb/queue/82de2883-043d-4f61-abf6-491f0cc948fb"
+      },
+      "Identifier": "68fa6c49-3a83-4f51-bcd0-4fbbc832aa34",
+      "Type": "UpdateContactTargetQueue",
+      "Transitions": {
+        "NextAction": "91bb6cd1-b0b9-4db2-ab42-4262dfd7932c",
+        "Errors": [
+          {
+            "NextAction": "9e060f10-e1f7-4a2d-92db-83cc6b9c5f2a",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {
+        "FlowLoggingBehavior": "Enabled"
+      },
+      "Identifier": "9cb371b3-377c-45ab-a0ca-a0a0913aea31",
+      "Type": "UpdateFlowLoggingBehavior",
+      "Transitions": {
+        "NextAction": "Welcome to the lab"
+      }
+    },
+    {
+      "Parameters": {
+        "SkipWhenDTMFBufferEnabled": "false",
+        "Text": "Welcome to the lab"
+      },
+      "Identifier": "Welcome to the lab",
+      "Type": "MessageParticipant",
+      "Transitions": {
+        "NextAction": "68fa6c49-3a83-4f51-bcd0-4fbbc832aa34",
+        "Errors": [
+          {
+            "NextAction": "9e060f10-e1f7-4a2d-92db-83cc6b9c5f2a",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    }
+  ]
+}

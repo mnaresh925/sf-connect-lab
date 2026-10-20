@@ -1,0 +1,319 @@
+{
+  "Version": "2019-10-30",
+  "StartAction": "9cb371b3-377c-45ab-a0ca-a0a0913aea31",
+  "Metadata": {
+    "entryPointPosition": {
+      "x": 40,
+      "y": 40
+    },
+    "ActionMetadata": {
+      "91bb6cd1-b0b9-4db2-ab42-4262dfd7932c": {
+        "position": {
+          "x": 1108.8,
+          "y": 30.4
+        }
+      },
+      "68fa6c49-3a83-4f51-bcd0-4fbbc832aa34": {
+        "position": {
+          "x": 840.8,
+          "y": 220
+        },
+        "parameters": {
+          "QueueId": {
+            "displayName": "SalesforceLabQueue"
+          }
+        },
+        "queue": {
+          "text": "SalesforceLabQueue"
+        }
+      },
+      "9e060f10-e1f7-4a2d-92db-83cc6b9c5f2a": {
+        "position": {
+          "x": 958.4,
+          "y": 484.8
+        }
+      },
+      "3a6f8cdb-03bf-42ab-b7e8-980278b80d0e": {
+        "position": {
+          "x": 70.4,
+          "y": 526.4
+        },
+        "conditions": [],
+        "conditionMetadata": [
+          {
+            "id": "f5b1c737-b2c9-44ba-bf8c-453544859a26",
+            "operator": {
+              "name": "Equals",
+              "value": "Equals",
+              "shortDisplay": "="
+            },
+            "value": "true"
+          }
+        ]
+      },
+      "b8424a2a-14ea-4ce2-9065-2d351a2d71d4": {
+        "position": {
+          "x": 623.2,
+          "y": 582.4
+        }
+      },
+      "37243abf-be19-48f6-900c-4c28dc92d68e": {
+        "position": {
+          "x": 368,
+          "y": 599.2
+        },
+        "parameters": {
+          "Attributes": {
+            "sfContactId": {
+              "useDynamic": true
+            },
+            "firstName": {
+              "useDynamic": true
+            },
+            "caseNumber": {
+              "useDynamic": true
+            },
+            "caseStatus": {
+              "useDynamic": true
+            }
+          }
+        },
+        "dynamicParams": [
+          "sfContactId",
+          "firstName",
+          "caseNumber",
+          "caseStatus"
+        ]
+      },
+      "9cb371b3-377c-45ab-a0ca-a0a0913aea31": {
+        "position": {
+          "x": 44,
+          "y": 172.8
+        }
+      },
+      "220a4a01-be30-4c4a-8094-3a8a986e95d0": {
+        "position": {
+          "x": 534.4,
+          "y": 93.6
+        },
+        "parameters": {
+          "LambdaFunctionARN": {
+            "displayName": "sfCustomerLookup"
+          },
+          "LambdaInvocationAttributes": {
+            "customerNumber": {
+              "useDynamic": true
+            }
+          }
+        },
+        "dynamicMetadata": {
+          "customerNumber": true
+        }
+      },
+      "e9871d24-4092-4de9-96be-d42ae0332843": {
+        "position": {
+          "x": 530.4,
+          "y": 292.8
+        }
+      },
+      "c20a5523-d0ee-4d46-bbf7-ed8170b823e0": {
+        "position": {
+          "x": 272.8,
+          "y": 129.6
+        },
+        "conditionMetadata": []
+      }
+    },
+    "Annotations": [],
+    "name": "LabInboundLookup",
+    "description": "",
+    "type": "contactFlow",
+    "status": "PUBLISHED",
+    "hash": {}
+  },
+  "Actions": [
+    {
+      "Parameters": {},
+      "Identifier": "91bb6cd1-b0b9-4db2-ab42-4262dfd7932c",
+      "Type": "TransferContactToQueue",
+      "Transitions": {
+        "NextAction": "9e060f10-e1f7-4a2d-92db-83cc6b9c5f2a",
+        "Errors": [
+          {
+            "NextAction": "9e060f10-e1f7-4a2d-92db-83cc6b9c5f2a",
+            "ErrorType": "QueueAtCapacity"
+          },
+          {
+            "NextAction": "9e060f10-e1f7-4a2d-92db-83cc6b9c5f2a",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {
+        "QueueId": "arn:aws:connect:ap-southeast-2:885571815657:instance/59b8c363-b1fb-452a-be2a-0418035f9ecb/queue/82de2883-043d-4f61-abf6-491f0cc948fb"
+      },
+      "Identifier": "68fa6c49-3a83-4f51-bcd0-4fbbc832aa34",
+      "Type": "UpdateContactTargetQueue",
+      "Transitions": {
+        "NextAction": "91bb6cd1-b0b9-4db2-ab42-4262dfd7932c",
+        "Errors": [
+          {
+            "NextAction": "9e060f10-e1f7-4a2d-92db-83cc6b9c5f2a",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {},
+      "Identifier": "9e060f10-e1f7-4a2d-92db-83cc6b9c5f2a",
+      "Type": "DisconnectParticipant",
+      "Transitions": {}
+    },
+    {
+      "Parameters": {
+        "ComparisonValue": "$.External.found"
+      },
+      "Identifier": "3a6f8cdb-03bf-42ab-b7e8-980278b80d0e",
+      "Type": "Compare",
+      "Transitions": {
+        "NextAction": "e9871d24-4092-4de9-96be-d42ae0332843",
+        "Conditions": [
+          {
+            "NextAction": "37243abf-be19-48f6-900c-4c28dc92d68e",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "true"
+              ]
+            }
+          }
+        ],
+        "Errors": [
+          {
+            "NextAction": "e9871d24-4092-4de9-96be-d42ae0332843",
+            "ErrorType": "NoMatchingCondition"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {
+        "SkipWhenDTMFBufferEnabled": "false",
+        "Text": "Hello $.Attributes.firstName. Your latest case status is $.Attributes.caseStatus."
+      },
+      "Identifier": "b8424a2a-14ea-4ce2-9065-2d351a2d71d4",
+      "Type": "MessageParticipant",
+      "Transitions": {
+        "NextAction": "68fa6c49-3a83-4f51-bcd0-4fbbc832aa34",
+        "Errors": [
+          {
+            "NextAction": "e9871d24-4092-4de9-96be-d42ae0332843",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {
+        "Attributes": {
+          "sfContactId": "$.External.sfContactId",
+          "firstName": "$.External.firstName",
+          "caseNumber": "$.External.caseNumber",
+          "caseStatus": "$.External.caseStatus"
+        },
+        "TargetContact": "Current"
+      },
+      "Identifier": "37243abf-be19-48f6-900c-4c28dc92d68e",
+      "Type": "UpdateContactAttributes",
+      "Transitions": {
+        "NextAction": "b8424a2a-14ea-4ce2-9065-2d351a2d71d4",
+        "Errors": [
+          {
+            "NextAction": "e9871d24-4092-4de9-96be-d42ae0332843",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {
+        "FlowLoggingBehavior": "Enabled"
+      },
+      "Identifier": "9cb371b3-377c-45ab-a0ca-a0a0913aea31",
+      "Type": "UpdateFlowLoggingBehavior",
+      "Transitions": {
+        "NextAction": "c20a5523-d0ee-4d46-bbf7-ed8170b823e0"
+      }
+    },
+    {
+      "Parameters": {
+        "LambdaFunctionARN": "arn:aws:lambda:ap-southeast-2:885571815657:function:sfCustomerLookup",
+        "InvocationTimeLimitSeconds": "8",
+        "InvocationType": "SYNCHRONOUS",
+        "LambdaInvocationAttributes": {
+          "customerNumber": "$.StoredCustomerInput"
+        },
+        "ResponseValidation": {
+          "ResponseType": "STRING_MAP"
+        }
+      },
+      "Identifier": "220a4a01-be30-4c4a-8094-3a8a986e95d0",
+      "Type": "InvokeLambdaFunction",
+      "Transitions": {
+        "NextAction": "3a6f8cdb-03bf-42ab-b7e8-980278b80d0e",
+        "Errors": [
+          {
+            "NextAction": "e9871d24-4092-4de9-96be-d42ae0332843",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {
+        "SkipWhenDTMFBufferEnabled": "false",
+        "Text": "We could not find your details"
+      },
+      "Identifier": "e9871d24-4092-4de9-96be-d42ae0332843",
+      "Type": "MessageParticipant",
+      "Transitions": {
+        "NextAction": "68fa6c49-3a83-4f51-bcd0-4fbbc832aa34",
+        "Errors": [
+          {
+            "NextAction": "9e060f10-e1f7-4a2d-92db-83cc6b9c5f2a",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {
+        "StoreInput": "False",
+        "InputTimeLimitSeconds": "10",
+        "Text": "Please enter your customer number followed by the hash key"
+      },
+      "Identifier": "c20a5523-d0ee-4d46-bbf7-ed8170b823e0",
+      "Type": "GetParticipantInput",
+      "Transitions": {
+        "NextAction": "220a4a01-be30-4c4a-8094-3a8a986e95d0",
+        "Errors": [
+          {
+            "NextAction": "e9871d24-4092-4de9-96be-d42ae0332843",
+            "ErrorType": "InputTimeLimitExceeded"
+          },
+          {
+            "NextAction": "220a4a01-be30-4c4a-8094-3a8a986e95d0",
+            "ErrorType": "NoMatchingCondition"
+          },
+          {
+            "NextAction": "e9871d24-4092-4de9-96be-d42ae0332843",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    }
+  ]
+}
