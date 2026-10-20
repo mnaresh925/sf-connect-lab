@@ -1,0 +1,13 @@
+{
+  "Details": {
+    "ContactData": {
+      "CustomerEndpoint": {
+        "Address": "+61400000000",
+        "Type": "TELEPHONE_NUMBER"
+      }
+    },
+    "Parameters": {
+      "customerNumber": "1001"
+    }
+  }
+}

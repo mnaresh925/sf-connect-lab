@@ -51,10 +51,12 @@
         }
         var id = contact.getContactId();
         var number = callerNumber(contact);
-        var sfContactId = attribute(contact, 'sfContactId'); // set by the contact flow in Phase 3b
+        var sfContactId = attribute(contact, 'sfContactId'); 
+        var sfCaseNumber = attribute(contact, 'caseNumber');
         calls[id] = {
             number: number,
             whoId: sfContactId,
+            sfCaseNumber: sfCaseNumber,
             startedAt: null
         };
         log('Incoming call from ' + number);
@@ -117,7 +119,7 @@
             CallType: 'Inbound',
             CallDurationInSeconds: seconds,
             CallObject: id, // the Connect contact ID, so you can find duplicates
-            Description: 'Amazon Connect contact ' + id
+            Description: 'Amazon Connect contact ' + id + ', case: ' + (c.sfCaseNumber || 'N/A')
         };
         if (c.whoId) {
             value.WhoId = c.whoId;
