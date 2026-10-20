@@ -12,6 +12,6 @@
     </values>
     <values>
         <field>Source_Number__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">+61291647435</value>
     </values>
 </CustomMetadata>
