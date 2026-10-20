@@ -1,0 +1,199 @@
+/* ── Container ────────────────────────────────────────────────────────────── */
+.banner-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 280px;
+    font-family: 'Salesforce Sans', sans-serif;
+    background: #f3f3f3;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+.banner-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    background: #032d60;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.header-icon {
+    --sds-c-icon-color-foreground: #f5a623;
+}
+
+.header-title {
+    flex: 1;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    background: #f5a623;
+    color: #032d60;
+    font-size: 0.6875rem;
+    font-weight: 700;
+}
+
+.clear-btn {
+    --sds-c-button-icon-color-foreground: #ffffff99;
+}
+
+.clear-btn:hover {
+    --sds-c-button-icon-color-foreground: #fff;
+}
+
+/* ── Empty state ──────────────────────────────────────────────────────────── */
+.empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 32px 16px;
+    color: #888;
+}
+
+.empty-icon {
+    --sds-c-icon-color-foreground: #4bca81;
+    margin-bottom: 6px;
+}
+
+.empty-text {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #444;
+}
+
+.empty-subtext {
+    margin: 0;
+    font-size: 0.75rem;
+}
+
+/* ── Case list ────────────────────────────────────────────────────────────── */
+.case-list {
+    flex: 1;
+    overflow-y: auto;
+    margin: 0;
+    padding: 8px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* ── Case card ────────────────────────────────────────────────────────────── */
+.case-card {
+    background: #fff;
+    border-radius: 6px;
+    border-left: 4px solid #f5a623;
+    padding: 8px 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    transition: box-shadow 0.15s ease;
+}
+
+.case-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.14);
+}
+
+.case-card-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.case-icon {
+    flex-shrink: 0;
+    --sds-c-icon-color-foreground: #032d60;
+}
+
+.case-subject {
+    flex: 1;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #032d60;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dismiss-btn {
+    flex-shrink: 0;
+    --sds-c-button-icon-color-foreground: #bbb;
+}
+
+.dismiss-btn:hover {
+    --sds-c-button-icon-color-foreground: #c23934;
+}
+
+.case-card-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.case-time {
+    font-size: 0.6875rem;
+    color: #888;
+    white-space: nowrap;
+}
+
+.case-number {
+    margin-top: 4px;
+    font-size: 0.6875rem;
+    color: #aaa;
+}
+
+/* ── Priority badges ──────────────────────────────────────────────────────── */
+.priority-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.priority-icon {
+    flex-shrink: 0;
+}
+
+.priority-critical {
+    background: #fde8e8;
+    color: #c23934;
+    --sds-c-icon-color-foreground: #c23934;
+}
+
+.priority-high {
+    background: #fff3e0;
+    color: #e65100;
+    --sds-c-icon-color-foreground: #e65100;
+}
+
+.priority-medium {
+    background: #fff8e1;
+    color: #f5a623;
+    --sds-c-icon-color-foreground: #f5a623;
+}
+
+.priority-low {
+    background: #e8f5e9;
+    color: #2e7d32;
+    --sds-c-icon-color-foreground: #2e7d32;
+}

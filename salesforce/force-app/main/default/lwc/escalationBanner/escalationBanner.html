@@ -1,0 +1,68 @@
+<template>
+    <div class="banner-container">
+        <!-- Header bar -->
+        <div class="banner-header">
+            <lightning-icon icon-name="utility:warning" size="x-small" class="header-icon"></lightning-icon>
+            <span class="header-title">Escalated Cases</span>
+            <template if:true={hasEscalations}>
+                <span class="badge">{escalatedCases.length}</span>
+            </template>
+            <template if:true={hasEscalations}>
+                <lightning-button-icon
+                    icon-name="utility:delete"
+                    variant="bare"
+                    size="small"
+                    title="Clear all"
+                    class="clear-btn"
+                    onclick={clearAll}>
+                </lightning-button-icon>
+            </template>
+        </div>
+
+        <!-- Empty state -->
+        <template if:false={hasEscalations}>
+            <div class="empty-state">
+                <lightning-icon icon-name="utility:check" size="medium" class="empty-icon"></lightning-icon>
+                <p class="empty-text">No escalated cases</p>
+                <p class="empty-subtext">You're all caught up!</p>
+            </div>
+        </template>
+
+        <!-- Escalated cases list -->
+        <template if:true={hasEscalations}>
+            <ul class="case-list" role="list">
+                <template for:each={escalatedCases} for:item="item">
+                    <li key={item.id} class="case-card" role="listitem">
+                        <div class="case-card-header">
+                            <lightning-icon
+                                icon-name="utility:case"
+                                size="x-small"
+                                class="case-icon">
+                            </lightning-icon>
+                            <span class="case-subject" title={item.subject}>{item.subject}</span>
+                            <lightning-button-icon
+                                icon-name="utility:close"
+                                variant="bare"
+                                size="small"
+                                title="Dismiss"
+                                data-id={item.id}
+                                onclick={dismissCase}
+                                class="dismiss-btn">
+                            </lightning-button-icon>
+                        </div>
+                        <div class="case-card-body">
+                            <span class={item.priorityClass}>
+                                <lightning-icon icon-name="utility:priority" size="xx-small" class="priority-icon"></lightning-icon>
+                                {item.priority}
+                            </span>
+                            <span class="case-time">{item.timeAgo}</span>
+                        </div>
+                        <template if:true={item.caseNumber}>
+                            <div class="case-number">Case #{item.caseNumber}</div>
+                        </template>
+                    </li>
+                </template>
+            </ul>
+        </template>
+    </div>
+</template>
